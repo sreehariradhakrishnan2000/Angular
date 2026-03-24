@@ -1,0 +1,9 @@
+[build]
+  base = "question-submitter"
+  command = "ng build --configuration production"
+  publish = "dist/question-submitter/browser"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
