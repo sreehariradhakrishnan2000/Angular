@@ -1,40 +1,126 @@
-<mat-card class="question-card">
-  <mat-card-header>
-    <mat-card-title>{{ title() }}</mat-card-title>
-    <mat-card-subtitle>Send your question to the configured email</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <form [formGroup]="questionForm" (ngSubmit)="sendQuestion()">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Your Question</mat-label>
-        <textarea matInput formControlName="question" rows="5" placeholder="Enter your question here... (min 10 chars)"></textarea>
-        <mat-error *ngIf="question?.hasError('required')">Question is required</mat-error>
-        <mat-error *ngIf="question?.hasError('minlength')">At least 10 characters required</mat-error>
-      </mat-form-field>
-    </form>
-    @if (errorMsg()) {
-      <div class="error-message">{{ errorMsg() }}</div>
-    }
-  </mat-card-content>
-  <mat-card-actions align="end">
-    <button mat-raised-button color="accent" type="button" (click)="sendQuestion()" [disabled]="loading() || questionForm.invalid">
-      @if (loading()) {
-        <mat-spinner diameter="20"></mat-spinner>
-        <span>Sending...</span>
-      } @else {
-        <ng-container>
-          <mat-icon>send</mat-icon>
-          <span>Send Question</span>
-        </ng-container>
-      }
-    </button>
-  </mat-card-actions>
+<div class="form-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <h1 class="main-title">
+      <mat-icon class="title-icon">help</mat-icon>
+      {{ title() }}
+    </h1>
+    <p class="subtitle">We'd love to hear from you! Send us your questions and we'll get back to you promptly.</p>
+  </div>
+
+  <!-- Main Form Card -->
+  <mat-card class="question-card">
+    <mat-card-content>
+      <form [formGroup]="questionForm" (ngSubmit)="sendQuestion()">
+        <!-- Question Field -->
+        <div class="form-field-wrapper">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Your Question</mat-label>
+            <textarea
+              matInput
+              formControlName="question"
+              rows="6"
+              placeholder="What would you like to know? Type your question here..."
+              (input)="onQuestionChange()">
+            </textarea>
+            <mat-hint align="end" class="char-counter">
+              {{ getCharCount() }}/500 characters
+            </mat-hint>
+            <mat-error *ngIf="question?.hasError('required')">
+              <mat-icon>error</mat-icon> Question is required
+            </mat-error>
+            <mat-error *ngIf="question?.hasError('minlength')">
+              <mat-icon>error</mat-icon> At least 10 characters required
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Character Count Bar -->
+          <div class="progress-bar-wrapper">
+            <div class="progress-bar" [style.width.%]="getCharPercentage()"></div>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        @if (errorMsg()) {
+          <div class="error-message animated-message">
+            <mat-icon>warning</mat-icon>
+            <span>{{ errorMsg() }}</span>
+          </div>
+        }
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="sendQuestion()"
+            [disabled]="loading() || questionForm.invalid"
+            class="send-button"
+          >
+            @if (loading()) {
+              <mat-spinner diameter="18"></mat-spinner>
+              <span class="button-text">Sending your question...</span>
+            } @else {
+              <ng-container>
+                <mat-icon>mail</mat-icon>
+                <span class="button-text">Send Question</span>
+              </ng-container>
+            }
+          </button>
+
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="resetForm()"
+            [disabled]="questionForm.pristine || loading()"
+            class="reset-button"
+          >
+            <mat-icon>refresh</mat-icon>
+            <span class="button-text">Clear</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Success Message Card -->
   @if (success()) {
-    <mat-card class="success-message">
-      <mat-icon>check_circle</mat-icon>
-      <span>Question sent successfully!</span>
-    </mat-card>
+    <div class="success-message-container animated-message">
+      <mat-card class="success-message">
+        <mat-icon class="success-icon">check_circle</mat-icon>
+        <div class="success-content">
+          <h3>Question Sent Successfully!</h3>
+          <p>Thank you for reaching out. We'll respond to your question soon.</p>
+        </div>
+      </mat-card>
+    </div>
   }
-</mat-card>
+
+  <!-- Info Section -->
+  <div class="info-section">
+    <div class="info-item">
+      <mat-icon>access_time</mat-icon>
+      <div>
+        <h4>Quick Response</h4>
+        <p>We typically respond within 24-48 hours</p>
+      </div>
+    </div>
+    <div class="info-item">
+      <mat-icon>mail</mat-icon>
+      <div>
+        <h4>Secure & Private</h4>
+        <p>Your question is sent securely to our email</p>
+      </div>
+    </div>
+    <div class="info-item">
+      <mat-icon>verified</mat-icon>
+      <div>
+        <h4>Professional Service</h4>
+        <p>Powered by trusted email infrastructure</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <router-outlet />

@@ -37,6 +37,8 @@ export class App {
   loading = signal(false);
   success = signal(false);
   errorMsg = signal('');
+  charCount = signal(0);
+  maxChars = 500;
 
   constructor() {
     this.questionForm = this.fb.group({
@@ -44,9 +46,28 @@ export class App {
     });
   }
 
+  onQuestionChange() {
+    const text = this.questionForm.get('question')?.value || '';
+    this.charCount.set(text.length);
+  }
+
+  getCharCount(): number {
+    return this.charCount();
+  }
+
+  getCharPercentage(): number {
+    return (this.charCount() / this.maxChars) * 100;
+  }
+
+  resetForm() {
+    this.questionForm.reset();
+    this.charCount.set(0);
+    this.errorMsg.set('');
+  }
+
   async sendQuestion() {
     if (this.questionForm.invalid) {
-      this.errorMsg.set('Please enter a valid question (min 10 chars)');
+      this.errorMsg.set('Please enter a valid question (min 10 characters)');
       return;
     }
     this.loading.set(true);
@@ -62,9 +83,10 @@ export class App {
       );
       this.success.set(true);
       this.questionForm.reset();
+      this.charCount.set(0);
       setTimeout(() => this.success.set(false), 3000);
     } catch (error) {
-      this.errorMsg.set('Failed to send. Check EmailJS config and console.');
+      this.errorMsg.set('Failed to send. Please check your EmailJS configuration and try again.');
       console.error('EmailJS error:', error);
     } finally {
       this.loading.set(false);
@@ -75,3 +97,4 @@ export class App {
     return this.questionForm.get('question');
   }
 }
+
