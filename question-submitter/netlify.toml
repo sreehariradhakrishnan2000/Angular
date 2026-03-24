@@ -1,6 +1,7 @@
 [build]
+  base = "question-submitter"
   command = "ng build --configuration production"
-  publish = "question-submitter/dist/question-submitter/browser"
+  publish = "dist/question-submitter/browser"
 
 [[redirects]]
   from = "/*"
