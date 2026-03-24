@@ -1,0 +1,67 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+mat-card.question-card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  color: white;
+  max-width: 500px;
+  width: 100%;
+}
+
+mat-form-field.full-width {
+  width: 100%;
+}
+
+mat-form-field.mat-mdc-form-field .mdc-text-field__input {
+  color: white;
+}
+
+mat-form-field.mat-mdc-form-field .mat-mdc-floating-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.success-message {
+  color: #4caf50 !important;
+  text-align: center;
+  padding: 1rem;
+  background: rgba(76, 175, 80, 0.2);
+  border-radius: 10px;
+  margin-top: 1rem;
+}
+
+.error-message {
+  color: #f44336;
+  text-align: center;
+}
+
+.send-button {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+

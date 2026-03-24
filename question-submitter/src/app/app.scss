@@ -1,0 +1,22 @@
+:host {
+  display: 100%;
+}
+
+mat-form-field {
+  display: block;
+  margin-bottom: 20px;
+}
+
+textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+button {
+  margin-top: 10px;
+}
+
+mat-spinner {
+  display: inline-block;
+  margin-right: 10px;
+}

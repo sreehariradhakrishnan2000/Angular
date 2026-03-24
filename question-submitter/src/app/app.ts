@@ -1,0 +1,77 @@
+import { Component, signal, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { RouterOutlet } from '@angular/router';
+
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+
+import * as emailjs from '@emailjs/browser';
+import { environment } from '../environments/environment';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterOutlet,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    MatIconModule
+  ],
+  templateUrl: './app.html',
+  styleUrl: './app.scss'
+})
+export class App {
+  fb = inject(FormBuilder);
+  title = signal('Question to Email Submitter');
+  questionForm: FormGroup;
+  loading = signal(false);
+  success = signal(false);
+  errorMsg = signal('');
+
+  constructor() {
+    this.questionForm = this.fb.group({
+      question: ['', [Validators.required, Validators.minLength(10)]]
+    });
+  }
+
+  async sendQuestion() {
+    if (this.questionForm.invalid) {
+      this.errorMsg.set('Please enter a valid question (min 10 chars)');
+      return;
+    }
+    this.loading.set(true);
+    this.success.set(false);
+    this.errorMsg.set('');
+
+    try {
+      await emailjs.send(
+        environment.emailjs.serviceId,
+        environment.emailjs.templateId,
+        { question: this.questionForm.value.question },
+        environment.emailjs.publicKey
+      );
+      this.success.set(true);
+      this.questionForm.reset();
+      setTimeout(() => this.success.set(false), 3000);
+    } catch (error) {
+      this.errorMsg.set('Failed to send. Check EmailJS config and console.');
+      console.error('EmailJS error:', error);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  get question() {
+    return this.questionForm.get('question');
+  }
+}

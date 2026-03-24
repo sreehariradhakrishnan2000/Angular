@@ -1,0 +1,40 @@
+<mat-card class="question-card">
+  <mat-card-header>
+    <mat-card-title>{{ title() }}</mat-card-title>
+    <mat-card-subtitle>Send your question to the configured email</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="questionForm" (ngSubmit)="sendQuestion()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Your Question</mat-label>
+        <textarea matInput formControlName="question" rows="5" placeholder="Enter your question here... (min 10 chars)"></textarea>
+        <mat-error *ngIf="question?.hasError('required')">Question is required</mat-error>
+        <mat-error *ngIf="question?.hasError('minlength')">At least 10 characters required</mat-error>
+      </mat-form-field>
+    </form>
+    @if (errorMsg()) {
+      <div class="error-message">{{ errorMsg() }}</div>
+    }
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-raised-button color="accent" type="button" (click)="sendQuestion()" [disabled]="loading() || questionForm.invalid">
+      @if (loading()) {
+        <mat-spinner diameter="20"></mat-spinner>
+        <span>Sending...</span>
+      } @else {
+        <ng-container>
+          <mat-icon>send</mat-icon>
+          <span>Send Question</span>
+        </ng-container>
+      }
+    </button>
+  </mat-card-actions>
+  @if (success()) {
+    <mat-card class="success-message">
+      <mat-icon>check_circle</mat-icon>
+      <span>Question sent successfully!</span>
+    </mat-card>
+  }
+</mat-card>
+
+<router-outlet />
