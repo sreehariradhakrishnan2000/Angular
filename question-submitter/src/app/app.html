@@ -1,125 +1,80 @@
-<div class="form-container">
-  <!-- Header Section -->
-  <div class="header-section">
-    <h1 class="main-title">
-      <mat-icon class="title-icon">help</mat-icon>
-      {{ title() }}
-    </h1>
-    <p class="subtitle">We'd love to hear from you! Send us your questions and we'll get back to you promptly.</p>
-  </div>
+<div class="flex items-center justify-center min-h-screen p-4">
+  <div class="w-full max-w-md glass rounded-2xl glow flex flex-col overflow-hidden" style="height: 600px;">
 
-  <!-- Main Form Card -->
-  <mat-card class="question-card">
-    <mat-card-content>
-      <form [formGroup]="questionForm" (ngSubmit)="sendQuestion()">
-        <!-- Question Field -->
-        <div class="form-field-wrapper">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Your Question</mat-label>
-            <textarea
-              matInput
-              formControlName="question"
-              rows="6"
-              placeholder="What would you like to know? Type your question here..."
-              (input)="onQuestionChange()">
-            </textarea>
-            <mat-hint align="end" class="char-counter">
-              {{ getCharCount() }}/500 characters
-            </mat-hint>
-            <mat-error *ngIf="question?.hasError('required')">
-              <mat-icon>error</mat-icon> Question is required
-            </mat-error>
-            <mat-error *ngIf="question?.hasError('minlength')">
-              <mat-icon>error</mat-icon> At least 10 characters required
-            </mat-error>
-          </mat-form-field>
-
-          <!-- Character Count Bar -->
-          <div class="progress-bar-wrapper">
-            <div class="progress-bar" [style.width.%]="getCharPercentage()"></div>
-          </div>
-        </div>
-
-        <!-- Error Message -->
-        @if (errorMsg()) {
-          <div class="error-message animated-message">
-            <mat-icon>warning</mat-icon>
-            <span>{{ errorMsg() }}</span>
-          </div>
-        }
-
-        <!-- Action Buttons -->
-        <div class="form-actions">
-          <button
-            mat-raised-button
-            color="primary"
-            type="button"
-            (click)="sendQuestion()"
-            [disabled]="loading() || questionForm.invalid"
-            class="send-button"
-          >
-            @if (loading()) {
-              <mat-spinner diameter="18"></mat-spinner>
-              <span class="button-text">Sending your question...</span>
-            } @else {
-              <ng-container>
-                <mat-icon>mail</mat-icon>
-                <span class="button-text">Send Question</span>
-              </ng-container>
-            }
-          </button>
-
-          <button
-            mat-stroked-button
-            type="button"
-            (click)="resetForm()"
-            [disabled]="questionForm.pristine || loading()"
-            class="reset-button"
-          >
-            <mat-icon>refresh</mat-icon>
-            <span class="button-text">Clear</span>
-          </button>
-        </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
-
-  <!-- Success Message Card -->
-  @if (success()) {
-    <div class="success-message-container animated-message">
-      <mat-card class="success-message">
-        <mat-icon class="success-icon">check_circle</mat-icon>
-        <div class="success-content">
-          <h3>Question Sent Successfully!</h3>
-          <p>Thank you for reaching out. We'll respond to your question soon.</p>
-        </div>
-      </mat-card>
+    <!-- Header -->
+    <div class="p-4 border-b border-gray-700 text-center backdrop-blur-md">
+      <h1 class="text-white text-xl font-semibold flex items-center justify-center gap-2">
+        <mat-icon class="text-sky-400">help</mat-icon>
+        Ask Me
+      </h1>
+      <p class="text-gray-400 text-sm mt-1">Send me your question</p>
     </div>
-  }
 
-  <!-- Info Section -->
-  <div class="info-section">
-    <div class="info-item">
-      <mat-icon>access_time</mat-icon>
-      <div>
-        <h4>Quick Response</h4>
-        <p>We typically respond within 24-48 hours</p>
+    <!-- Chat Area / Messages Display -->
+    <div id="messageArea" class="flex-1 p-4 overflow-y-auto space-y-3 flex flex-col">
+      <!-- Info message at start -->
+      <div class="p-3 rounded-lg bg-gray-700 text-white text-sm max-w-sm">
+        <mat-icon class="text-xs align-middle" style="vertical-align: middle;">info</mat-icon> Type your question below
       </div>
+
+      <!-- Success Message -->
+      @if (success()) {
+        <div class="p-3 rounded-lg bg-green-500 text-white max-w-sm animation-slide-up">
+          <mat-icon class="align-middle text-sm" style="vertical-align: middle;">check_circle</mat-icon> Question sent! ✅
+        </div>
+      }
+
+      <!-- Error Message -->
+      @if (errorMsg()) {
+        <div class="p-3 rounded-lg bg-red-500 text-white max-w-sm animation-slide-up">
+          <mat-icon class="align-middle text-sm" style="vertical-align: middle;">error</mat-icon> {{ errorMsg() }}
+        </div>
+      }
     </div>
-    <div class="info-item">
-      <mat-icon>mail</mat-icon>
-      <div>
-        <h4>Secure & Private</h4>
-        <p>Your question is sent securely to our email</p>
+
+    <!-- Input Area -->
+    <form [formGroup]="questionForm" (ngSubmit)="sendQuestion()" class="p-4 border-t border-gray-700 backdrop-blur-md">
+      <div class="flex gap-2">
+        <textarea
+          id="input"
+          formControlName="question"
+          placeholder="Type your question..."
+          [disabled]="loading()"
+          (input)="onQuestionChange()"
+          class="flex-1 p-2 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-sky-400 resize-none transition"
+          rows="2"
+          style="min-height: 40px; max-height: 80px; font-family: 'Roboto', sans-serif;"
+        ></textarea>
+
+        <button
+          type="button"
+          (click)="sendQuestion()"
+          [disabled]="loading() || questionForm.invalid"
+          class="px-3 py-2 bg-sky-400 text-gray-900 font-semibold rounded-lg hover:bg-sky-500 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 whitespace-nowrap"
+        >
+          @if (loading()) {
+            <mat-spinner diameter="14"></mat-spinner>
+            <span class="text-xs">Sending</span>
+          } @else {
+            <span>Send 🚀</span>
+          }
+        </button>
       </div>
-    </div>
-    <div class="info-item">
-      <mat-icon>verified</mat-icon>
-      <div>
-        <h4>Professional Service</h4>
-        <p>Powered by trusted email infrastructure</p>
+
+      <!-- Character Counter -->
+      <div class="text-xs text-gray-500 mt-2 text-right">
+        {{ getCharCount() }}/500
       </div>
-    </div>
+
+      <!-- Validation Errors -->
+      @if (question?.hasError('required') && question?.touched) {
+        <div class="text-xs text-red-400 mt-1">Question is required</div>
+      }
+      @if (question?.hasError('minlength') && question?.touched) {
+        <div class="text-xs text-red-400 mt-1">Min 10 characters</div>
+      }
+    </form>
+
   </div>
 </div>
 
